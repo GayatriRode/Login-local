@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="style.css">
+<title>User Dashboard</title>
+</head>
+<body>
+<div class="wrapper">
+    <h3 class="text-center pb-4">User Dashboard</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Username</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editUserForm">
+                  <input type="hidden" id="editUserId">
+                  <div class="mb-3">
+                      <label for="editFullName" class="form-label">Full Name:</label>
+                      <input type="text" class="form-control" id="editFullName" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="editEmail" class="form-label">Email:</label>
+                      <input type="email" class="form-control" id="editEmail" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="editMobile" class="form-label">Mobile:</label>
+                      <input type="tel" class="form-control" id="editMobile" required maxlength="10">
+                  </div>
+                  <div class="mb-3">
+                      <label for="editUsername" class="form-label">Username:</label>
+                      <input type="text" class="form-control" id="editUsername" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>  
+<script>
+    function displayUsers() {
+        var userTableBody = document.getElementById("userTableBody");
+        userTableBody.innerHTML = "";
+      
+        var users = JSON.parse(localStorage.getItem("users")) || [];
+      
+        users.forEach(function(user, index) {
+            var row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td>${user.mobile}</td>
+                <td>${user.username}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="editUserModal('${index}')">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser('${index}')">Delete</button>
+                </td>
+            `;
+            userTableBody.appendChild(row);
+        });
+    }
+      
+    function editUserModal(index) {
+        var users = JSON.parse(localStorage.getItem("users")) || [];
+        var user = users[index];
+      
+        if (user) {
+            document.getElementById("editUserId").value = index;
+            document.getElementById("editFullName").value = user.fullName;
+            document.getElementById("editEmail").value = user.email;
+            document.getElementById("editMobile").value = user.mobile;
+            document.getElementById("editUsername").value = user.username;
+      
+            var editUserModal = new bootstrap.Modal(document.getElementById("editUserModal"));
+            editUserModal.show();
+        }
+    }
+      
+document.getElementById("editUserForm").addEventListener("submit", function(event) {
+event.preventDefault();
+      
+    var index = document.getElementById("editUserId").value;
+    var fullName = document.getElementById("editFullName").value;
+    var email = document.getElementById("editEmail").value;
+    var mobile = document.getElementById("editMobile").value;
+    var username = document.getElementById("editUsername").value;
+      
+    var users = JSON.parse(localStorage.getItem("users")) || [];
+    users[index] = {
+        fullName: fullName,
+        email: email,
+        mobile: mobile,
+        username: username
+    };
+    localStorage.setItem("users", JSON.stringify(users));
+
+    var editUserModal = bootstrap.Modal.getInstance(document.getElementById("editUserModal"));
+    editUserModal.hide();
+
+    displayUsers();
+});
+      
+    function deleteUser(index) {
+        var users = JSON.parse(localStorage.getItem("users")) || [];
+
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        displayUsers();
+    }
+      
+displayUsers();
+</script>
+</body>
+</html>

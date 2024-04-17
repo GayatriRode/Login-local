@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.wrapper{
+    padding: 4%;
+    background-color: #cdb4db;
+    height: 100vh;
+}
+
+label, input{
+    display: block;
+    margin-bottom: 10px;
+    width: 300px;
+}
+
+button{
+    margin-top: 10px;
+}
+
+#form1{
+    width: 40%;
+    background-color: white;
+    position: relative;
+    border: 1px solid black;
+    padding: 4%;
+    margin: 20px;
+    left: 30%;
+}
